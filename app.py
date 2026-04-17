@@ -1,4 +1,3 @@
-
 import streamlit as st
 from groq import Groq
 
@@ -16,8 +15,13 @@ with st.sidebar:
 
 st.title("💬 Sahildev ChatGPT")
 
-# Initialize Groq
-client = Groq(api_key="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")
+# Initialize Groq using Streamlit Secrets
+# This replaces the hardcoded gsk_... key
+try:
+    client = Groq(api_key=st.secrets["GROQ_API_KEY"])
+except KeyError:
+    st.error("Please add your 'GROQ_API_KEY' to Streamlit Secrets!")
+    st.stop()
 
 # Initialize Chat History
 if "messages" not in st.session_state:
@@ -52,4 +56,3 @@ if prompt := st.chat_input("What is on your mind?"):
                 st.session_state.messages.append({"role": "assistant", "content": full_response})
             except Exception as e:
                 st.error(f"Error: {e}")
-    
